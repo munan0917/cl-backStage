@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cl.mapper.VideoMediaMapper">
+    
+    <resultMap type="VideoMedia" id="VideoMediaResult">
+        <result property="id"    column="id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="data"    column="data"    />
+        <result property="displayName"    column="display_name"    />
+        <result property="displayIp"    column="display_ip"    />
+        <result property="title"    column="title"    />
+        <result property="description"    column="description"    />
+        <result property="isDeleted"    column="is_deleted"    />
+        <result property="gmtCreate"    column="gmt_create"    />
+        <result property="gmtModified"    column="gmt_modified"    />
+    </resultMap>
+
+    <sql id="selectVideoMediaVo">
+        select id, user_name, data, display_name, display_ip, title, description, is_deleted, gmt_create, gmt_modified from video_media
+    </sql>
+
+    <select id="selectVideoMediaList" parameterType="VideoMedia" resultMap="VideoMediaResult">
+        <include refid="selectVideoMediaVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="displayName != null  and displayName != ''"> and display_name like concat('%', #{displayName}, '%')</if>
+            <if test="displayIp != null  and displayIp != ''"> and display_ip = #{displayIp}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+        </where>
+    </select>
+    
+    <select id="selectVideoMediaById" parameterType="Long" resultMap="VideoMediaResult">
+        <include refid="selectVideoMediaVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertVideoMedia" parameterType="VideoMedia" useGeneratedKeys="true" keyProperty="id">
+        insert into video_media
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">user_name,</if>
+            <if test="data != null">data,</if>
+            <if test="displayName != null">display_name,</if>
+            <if test="displayIp != null">display_ip,</if>
+            <if test="title != null">title,</if>
+            <if test="description != null">description,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+            <if test="gmtCreate != null">gmt_create,</if>
+            <if test="gmtModified != null">gmt_modified,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">#{userName},</if>
+            <if test="data != null">#{data},</if>
+            <if test="displayName != null">#{displayName},</if>
+            <if test="displayIp != null">#{displayIp},</if>
+            <if test="title != null">#{title},</if>
+            <if test="description != null">#{description},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+            <if test="gmtCreate != null">#{gmtCreate},</if>
+            <if test="gmtModified != null">#{gmtModified},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVideoMedia" parameterType="VideoMedia">
+        update video_media
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="data != null">data = #{data},</if>
+            <if test="displayName != null">display_name = #{displayName},</if>
+            <if test="displayIp != null">display_ip = #{displayIp},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+            <if test="gmtCreate != null">gmt_create = #{gmtCreate},</if>
+            <if test="gmtModified != null">gmt_modified = #{gmtModified},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteVideoMediaById" parameterType="Long">
+        delete from video_media where id = #{id}
+    </delete>
+
+    <delete id="deleteVideoMediaByIds" parameterType="String">
+        delete from video_media where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
